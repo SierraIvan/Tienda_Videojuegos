@@ -82,14 +82,13 @@ public class Main {
         Statement stmt = conexion.createStatement();
         
         String createTableSQL = "CREATE TABLE IF NOT EXISTS Personal ("
-            + "id_personal INT AUTO_INCREMENT PRIMARY KEY,"  // Corregido a id_personal
+            + "id_personal INT AUTO_INCREMENT PRIMARY KEY,"
             + "nombre VARCHAR(30) NOT NULL,"
-            + "telefono INT,"
-            + "email VARCHAR(50)"
+            + "rol ENUM('administrador', 'empleado'),"
             + ")";
         
         stmt.executeUpdate(createTableSQL);
-        System.out.println("Tabla personal creada correctamente");  // Corregido mensaje de consola
+        System.out.println("Tabla personal creada correctamente");
         
         stmt.close();
     }
