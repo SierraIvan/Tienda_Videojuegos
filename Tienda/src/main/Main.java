@@ -3,6 +3,7 @@ package main;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.Statement;
 import java.sql.SQLException;
 import java.util.Scanner;
@@ -32,7 +33,9 @@ public class Main {
             	System.out.println("Saliendo...");
             	break;
             case 1:
-            	AñadirTabla(conexion);
+            	System.out.println("1- Productos\n2- Porveedores\n3- Clientes\n4- Ventas\n5- Compras\nEn que tabla quieres añadir: ");
+            	opcion = sc.nextInt();
+            	AñadirTabla(conexion,opcion);
             	break;
             default:
             	System.out.println("no se");
@@ -87,6 +90,42 @@ public class Main {
         stmt.close();
     }
     
+    private static void CrearTablaVender(Connection conexion) throws SQLException {
+        Statement stmt = conexion.createStatement();
+        
+        String createTableSQL = "CREATE TABLE IF NOT EXISTS Vender ("
+                + "id_venta INT AUTO_INCREMENT PRIMARY KEY,"
+                + "fecha DATE NOT NULL,"
+                + "id_producto INT,"
+                + "id_cliente INT,"
+                + "FOREIGN KEY (id_producto) REFERENCES Producto(id_producto) ON DELETE CASCADE ON UPDATE CASCADE,"
+                + "FOREIGN KEY (id_cliente) REFERENCES Clientes(id_cliente) ON DELETE CASCADE ON UPDATE CASCADE"
+                + ")";
+
+        stmt.executeUpdate(createTableSQL);
+        System.out.println("Tabla compra creada correctamente");
+        
+        stmt.close();
+    }
+    
+    private static void CrearTablaComprar(Connection conexion) throws SQLException {
+        Statement stmt = conexion.createStatement();
+        
+        String createTableSQL = "CREATE TABLE IF NOT EXISTS Comprar ("
+                + "id_compra INT AUTO_INCREMENT PRIMARY KEY,"
+                + "fecha DATE NOT NULL,"
+                + "id_producto INT,"
+                + "id_proveedor INT,"
+                + "FOREIGN KEY (id_producto) REFERENCES Producto(id_producto) ON DELETE CASCADE ON UPDATE CASCADE,"
+                + "FOREIGN KEY (id_proveedor) REFERENCES Proveedores(id_proveedor) ON DELETE CASCADE ON UPDATE CASCADE"
+                + ")";
+
+        stmt.executeUpdate(createTableSQL);
+        System.out.println("Tabla compra creada correctamente");
+        
+        stmt.close();
+    }
+    
     private static void CrearTablaClientes(Connection conexion) throws SQLException {
         Statement stmt = conexion.createStatement();
         
@@ -103,56 +142,126 @@ public class Main {
         stmt.close();
     }
     
-    private static void CrearTablaPersonal(Connection conexion) throws SQLException {
-        Statement stmt = conexion.createStatement();
-        
-        String createTableSQL = "CREATE TABLE IF NOT EXISTS Personal ("
-            + "id_personal INT AUTO_INCREMENT PRIMARY KEY,"
-            + "nombre VARCHAR(30) NOT NULL,"
-            + "rol ENUM('administrador', 'empleado')"
-            + ")";
-        
-        stmt.executeUpdate(createTableSQL);
-        System.out.println("Tabla personal creada correctamente");
-        
-        stmt.close();
-    }
     
     
     //metodo para añadir datos a tablas
-    public static void AñadirTabla(Connection conexion) throws SQLException {
+    public static void AñadirTabla(Connection conexion, int opcion) throws SQLException {
         Statement stmt = conexion.createStatement();
         Scanner sc = new Scanner(System.in);
 
-        System.out.println("1- Productos\n2- Porveedores\n3- Clientes\n4- Personal\nEn que tabla quieres añadir: ");
-        
-        int opcion = sc.nextInt();
-    	
-        switch(opcion) {
-        	
-        case 1:
-            System.out.println("Introduce el nombre del producto:");
-            String nombre = sc.next();
+        switch (opcion) {
+            case 1: // Insertar en Producto
+                System.out.println("Introduce el nombre del producto:");
+                String nombreProducto = sc.next();
 
-            System.out.println("Introduce el precio del producto(con 2 decimales):");
-            Double precio = sc.nextDouble();
+                System.out.println("Introduce el precio del producto (con 2 decimales):");
+                Double precio = sc.nextDouble();
 
-            System.out.println("Introduce el stock que tiene el prodcuto:");
-            int stock = sc.nextInt();
-            
-            String añadir = "INSERT INTO producto(nombre, precio, stock) VALUES ('" 
-                    + nombre + "', " + precio + ", " + stock + ")";
-            stmt.executeUpdate(añadir);
-            break;
-           
-         default:
-        	 System.out.println("no se encontro opción");
-        
+                System.out.println("Introduce el stock que tiene el producto:");
+                int stock = sc.nextInt();
+
+                String sqlProducto = "INSERT INTO Producto(nombre, precio, stock) VALUES ('" 
+                        + nombreProducto + "', " + precio + ", " + stock + ")";
+                stmt.executeUpdate(sqlProducto);
+                System.out.println("Producto añadido correctamente.");
+                break;
+
+            case 2: // Insertar en Proveedores
+                System.out.println("Introduce el nombre del proveedor:");
+                String nombreProveedor = sc.next();
+
+                System.out.println("Introduce el contacto del proveedor:");
+                String contacto = sc.next();
+
+                System.out.println("Introduce la dirección del proveedor:");
+                String direccion = sc.next();
+
+                String sqlProveedor = "INSERT INTO Proveedores(nombre, contacto, direccion) VALUES ('" 
+                        + nombreProveedor + "', '" + contacto + "', '" + direccion + "')";
+                stmt.executeUpdate(sqlProveedor);
+                System.out.println("Proveedor añadido correctamente.");
+                break;
+
+            case 3: // Insertar en Clientes
+                System.out.println("Introduce el nombre del cliente:");
+                String nombreCliente = sc.next();
+
+                System.out.println("Introduce el teléfono del cliente:");
+                int telefono = sc.nextInt();
+
+                System.out.println("Introduce el email del cliente:");
+                String email = sc.next();
+
+                String sqlCliente = "INSERT INTO Clientes(nombre, telefono, email) VALUES ('" 
+                        + nombreCliente + "', " + telefono + ", '" + email + "')";
+                stmt.executeUpdate(sqlCliente);
+                System.out.println("Cliente añadido correctamente.");
+                break;
+
+            case 4: // Insertar en Vender
+                System.out.println("Introduce el nombre del producto vendido:");
+                String productoVendido = sc.next();
+
+                System.out.println("Introduce el nombre del cliente:");
+                String clienteVenta = sc.next();
+
+                System.out.println("Introduce la fecha de la venta (YYYY-MM-DD):");
+                String fechaVenta = sc.next();
+
+                
+                String buscarProducto = "SELECT id_producto FROM Producto WHERE nombre = '" + productoVendido + "'";
+                ResultSet rsProducto = stmt.executeQuery(buscarProducto);
+                int idProducto = rsProducto.next() ? rsProducto.getInt("id_producto") : -1;
+
+                String buscarCliente = "SELECT id_cliente FROM Clientes WHERE nombre = '" + clienteVenta + "'";
+                ResultSet rsCliente = stmt.executeQuery(buscarCliente);
+                int idCliente = rsCliente.next() ? rsCliente.getInt("id_cliente") : -1;
+
+                if (idProducto != -1 && idCliente != -1) {
+                    String sqlVender = "INSERT INTO Vender (fecha, id_producto, id_cliente) VALUES ('"
+                            + fechaVenta + "', " + idProducto + ", " + idCliente + ")";
+                    stmt.executeUpdate(sqlVender);
+                    System.out.println("Venta registrada correctamente.");
+                } else {
+                    System.out.println("Error: Producto o Cliente no encontrado.");
+                }
+                break;
+
+            case 5: // Insertar en Comprar
+                System.out.println("Introduce el nombre del producto comprado:");
+                String productoComprado = sc.next();
+
+                System.out.println("Introduce el nombre del proveedor:");
+                String proveedorCompra = sc.next();
+
+                System.out.println("Introduce la fecha de la compra (YYYY-MM-DD):");
+                String fechaCompra = sc.next();
+
+                String buscarProductoCompra = "SELECT id_producto FROM Producto WHERE nombre = '" + productoComprado + "'";
+                ResultSet rsProductoCompra = stmt.executeQuery(buscarProductoCompra);
+                int idProductoCompra = rsProductoCompra.next() ? rsProductoCompra.getInt("id_producto") : -1;
+
+
+                String buscarProveedor = "SELECT id_proveedor FROM Proveedores WHERE nombre = '" + proveedorCompra + "'";
+                ResultSet rsProveedor = stmt.executeQuery(buscarProveedor);
+                int idProveedor = rsProveedor.next() ? rsProveedor.getInt("id_proveedor") : -1;
+
+                if (idProductoCompra != -1 && idProveedor != -1) {
+                    String sqlComprar = "INSERT INTO Comprar (fecha, id_producto, id_proveedor) VALUES ('"
+                            + fechaCompra + "', " + idProductoCompra + ", " + idProveedor + ")";
+                    stmt.executeUpdate(sqlComprar);
+                    System.out.println("Compra registrada correctamente.");
+                } else {
+                    System.out.println("Error: Producto o Proveedor no encontrado.");
+                }
+                break;
+
+            default:
+                System.out.println("No se encontró la opción.");
         }
-        
-        
 
-        System.out.println("Producto añadido correctamente.");
+        stmt.close();
     }
+
 
 }
