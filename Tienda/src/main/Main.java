@@ -25,7 +25,7 @@ public class Main {
             
             int opcion = 1;
             while(opcion != 0) {
-            	System.out.println("0- Salir\n1- Añadir Datos");
+            	System.out.println("0- Salir\n1- Añadir Datos\n2- Vender");
             	opcion = sc.nextInt();
             	
             switch(opcion) {
@@ -37,6 +37,11 @@ public class Main {
             	opcion = sc.nextInt();
             	AñadirTabla(conexion,opcion);
             	break;
+            case 2:
+                Vender(conexion);
+                break;
+        
+            		
             default:
             	System.out.println("no se");
             }
@@ -64,7 +69,7 @@ public class Main {
         String createTableSQL = "CREATE TABLE IF NOT EXISTS Producto ("
             + "id_producto INT AUTO_INCREMENT PRIMARY KEY,"
             + "nombre VARCHAR(50) NOT NULL,"
-            + "precio DECIMAL(4,2),"
+            + "precio DECIMAL(6,2),"
             + "stock INT"
             + ")";
         
@@ -152,7 +157,7 @@ public class Main {
         switch (opcion) {
             case 1: // Insertar en Producto
                 System.out.println("Introduce el nombre del producto:");
-                String nombreProducto = sc.next();
+                String nombreProducto = sc.nextLine();;
 
                 System.out.println("Introduce el precio del producto (con 2 decimales):");
                 Double precio = sc.nextDouble();
@@ -168,13 +173,13 @@ public class Main {
 
             case 2: // Insertar en Proveedores
                 System.out.println("Introduce el nombre del proveedor:");
-                String nombreProveedor = sc.next();
+                String nombreProveedor= sc.nextLine();
 
                 System.out.println("Introduce el contacto del proveedor:");
-                String contacto = sc.next();
+                String contacto = sc.nextLine();
 
                 System.out.println("Introduce la dirección del proveedor:");
-                String direccion = sc.next();
+                String direccion = sc.nextLine();
 
                 String sqlProveedor = "INSERT INTO Proveedores(nombre, contacto, direccion) VALUES ('" 
                         + nombreProveedor + "', '" + contacto + "', '" + direccion + "')";
@@ -184,13 +189,13 @@ public class Main {
 
             case 3: // Insertar en Clientes
                 System.out.println("Introduce el nombre del cliente:");
-                String nombreCliente = sc.next();
+                String nombreCliente = sc.nextLine();
 
                 System.out.println("Introduce el teléfono del cliente:");
                 int telefono = sc.nextInt();
 
                 System.out.println("Introduce el email del cliente:");
-                String email = sc.next();
+                String email = sc.nextLine();
 
                 String sqlCliente = "INSERT INTO Clientes(nombre, telefono, email) VALUES ('" 
                         + nombreCliente + "', " + telefono + ", '" + email + "')";
@@ -200,14 +205,14 @@ public class Main {
 
             case 4: // Insertar en Vender
                 System.out.println("Introduce el nombre del producto vendido:");
-                String productoVendido = sc.next();
+                String productoVendido = sc.nextLine();
 
                 System.out.println("Introduce el nombre del cliente:");
-                String clienteVenta = sc.next();
+                String clienteVenta = sc.nextLine();
 
                 System.out.println("Introduce la fecha de la venta (YYYY-MM-DD):");
-                String fechaVenta = sc.next();
-
+                String fechaVenta = sc.nextLine();
+                
                 
                 String buscarProducto = "SELECT id_producto FROM Producto WHERE nombre = '" + productoVendido + "'";
                 ResultSet rsProducto = stmt.executeQuery(buscarProducto);
@@ -220,7 +225,10 @@ public class Main {
                 if (idProducto != -1 && idCliente != -1) {
                     String sqlVender = "INSERT INTO Vender (fecha, id_producto, id_cliente) VALUES ('"
                             + fechaVenta + "', " + idProducto + ", " + idCliente + ")";
+                    String sqlStock ="UPDATE Producto SET stock = stock - 1 " +
+                            "WHERE nombre = '" + productoVendido + "' AND stock > 0";
                     stmt.executeUpdate(sqlVender);
+                    stmt.executeUpdate(sqlStock);
                     System.out.println("Venta registrada correctamente.");
                 } else {
                     System.out.println("Error: Producto o Cliente no encontrado.");
@@ -229,13 +237,13 @@ public class Main {
 
             case 5: // Insertar en Comprar
                 System.out.println("Introduce el nombre del producto comprado:");
-                String productoComprado = sc.next();
+                String productoComprado = sc.nextLine();
 
                 System.out.println("Introduce el nombre del proveedor:");
-                String proveedorCompra = sc.next();
+                String proveedorCompra = sc.nextLine();
 
                 System.out.println("Introduce la fecha de la compra (YYYY-MM-DD):");
-                String fechaCompra = sc.next();
+                String fechaCompra = sc.nextLine();
 
                 String buscarProductoCompra = "SELECT id_producto FROM Producto WHERE nombre = '" + productoComprado + "'";
                 ResultSet rsProductoCompra = stmt.executeQuery(buscarProductoCompra);
@@ -249,7 +257,9 @@ public class Main {
                 if (idProductoCompra != -1 && idProveedor != -1) {
                     String sqlComprar = "INSERT INTO Comprar (fecha, id_producto, id_proveedor) VALUES ('"
                             + fechaCompra + "', " + idProductoCompra + ", " + idProveedor + ")";
+
                     stmt.executeUpdate(sqlComprar);
+                    
                     System.out.println("Compra registrada correctamente.");
                 } else {
                     System.out.println("Error: Producto o Proveedor no encontrado.");
@@ -262,6 +272,12 @@ public class Main {
 
         stmt.close();
     }
+    
+    
+    public static void Vender(Connection conexion) throws SQLException {
+        AñadirTabla(conexion, 4);
+    }
 
 
 }
+
