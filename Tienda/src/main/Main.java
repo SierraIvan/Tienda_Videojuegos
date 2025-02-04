@@ -21,7 +21,10 @@ public class Main {
 
 			int opcion = 1;
 			while (opcion != 0) {
-				System.out.println("0- Salir\n1- Añadir Datos\n2- Vender\n3- Mostrar Tabla");
+				for(int i = 0; i<10;i++) {
+					System.out.println("");
+				}
+				System.out.println("0- Salir\n1- Añadir Datos\n2- Vender\n3- Comprar\n4- Mostrar Tabla");
 				opcion = sc.nextInt();
 
 				switch (opcion) {
@@ -38,8 +41,13 @@ public class Main {
 					Vender(conexion);
 					break;
 				case 3:
-					System.out.println(
-							"1- Productos\n2- Provedores\n3- Clientes\n4- Compras\n5- Ventas\n¿Qué tabla quieres mostrar?\n ");
+					Comprar(conexion);
+					break;
+				case 4:
+					for(int i = 0; i<10;i++) {
+						System.out.println("");
+					}
+					System.out.println("1- Productos\n2- Provedores\n3- Clientes\n4- Compras\n5- Ventas\n¿Qué tabla quieres mostrar?\n ");
 					opcion = sc.nextInt();
 					mostrarTabla(conexion, opcion);
 					break;
@@ -133,7 +141,6 @@ public class Main {
 		case 1: // Insertar en Producto
 			System.out.println("Introduce el nombre del producto:");
 			String nombreProducto = sc.nextLine();
-			;
 
 			System.out.println("Introduce el precio del producto (con 2 decimales):");
 			Double precio = sc.nextDouble();
@@ -179,36 +186,6 @@ public class Main {
 			System.out.println("Cliente añadido correctamente.");
 			break;
 
-		case 4: // Insertar en Comprar
-			System.out.println("Introduce el nombre del producto comprado:");
-			String productoComprado = sc.nextLine();
-
-			System.out.println("Introduce el nombre del proveedor:");
-			String proveedorCompra = sc.nextLine();
-
-			System.out.println("Introduce la fecha de la compra (YYYY-MM-DD):");
-			String fechaCompra = sc.nextLine();
-
-			String buscarProductoCompra = "SELECT id_producto FROM Producto WHERE nombre = '" + productoComprado + "'";
-			ResultSet rsProductoCompra = stmt.executeQuery(buscarProductoCompra);
-			int idProductoCompra = rsProductoCompra.next() ? rsProductoCompra.getInt("id_producto") : -1;
-
-			String buscarProveedor = "SELECT id_proveedor FROM Proveedores WHERE nombre = '" + proveedorCompra + "'";
-			ResultSet rsProveedor = stmt.executeQuery(buscarProveedor);
-			int idProveedor = rsProveedor.next() ? rsProveedor.getInt("id_proveedor") : -1;
-
-			if (idProductoCompra != -1 && idProveedor != -1) {
-				String sqlComprar = "INSERT INTO Comprar (fecha, id_producto, id_proveedor) VALUES ('" + fechaCompra
-						+ "', " + idProductoCompra + ", " + idProveedor + ")";
-
-				stmt.executeUpdate(sqlComprar);
-
-				System.out.println("Compra registrada correctamente.");
-			} else {
-				System.out.println("Error: Producto o Proveedor no encontrado.");
-			}
-			break;
-
 		default:
 			System.out.println("No se encontró la opción.");
 		}
@@ -223,36 +200,146 @@ public class Main {
 		switch (opcion) {
 		case 1:
 			query = "SELECT * FROM Producto";
+			stmt.executeQuery(query);
 			break;
 		case 2:
 			query = "SELECT * FROM Proveedores";
+			stmt.executeQuery(query);
 			break;
 		case 3:
 			query = "SELECT * FROM Clientes";
+			stmt.executeQuery(query);
 			break;
 		case 4:
-			query = "SELECT * FROM Comprar";
+			mostrarCompras(conexion);
 			break;
 		case 5:
-			query = "SELECT * FROM Vender";
+			mostrarVentas(conexion);
 		default:
 			System.out.println("Opción no válida.");
 			stmt.close();
 			return;
 		}
 
-		ResultSet rs = stmt.executeQuery(query);
-		int columnCount = rs.getMetaData().getColumnCount();
+		stmt.close();
+	}
+	
+	public static void mostrarCompras(Connection conexion) throws SQLException {
+	    Statement stmt = conexion.createStatement();
 
-		while (rs.next()) {
-			for (int i = 1; i <= columnCount; i++) {
-				System.out.print(rs.getString(i) + " | ");
-			}
-			System.out.println();
+	    // Query JOIN para obtener detalles de compras
+	    String query = "SELECT c.id_compra, c.fecha, p.nombre AS producto, pr.nombre AS proveedor " +
+	                   "FROM Comprar c " +
+	                   "JOIN Producto p ON c.id_producto = p.id_producto " +
+	                   "JOIN Proveedores pr ON c.id_proveedor = pr.id_proveedor";
+
+	    ResultSet rs = stmt.executeQuery(query);
+		for(int i = 0; i<10;i++) {
+			System.out.println("");
+		}
+	    System.out.println("Detalles de Compras:");
+	    System.out.println("ID Compra | Fecha       | Producto                 | Proveedor");
+	    System.out.println("-----------------------------------------------------------------------------------------");
+
+	    while (rs.next()) {
+	        int idCompra = rs.getInt("id_compra");
+	        String fecha = rs.getString("fecha");
+	        String producto = rs.getString("producto");
+	        String proveedor = rs.getString("proveedor");
+
+	       
+	        String fila = idCompra + "         | " + fecha + " | " + producto;
+	        // Ajustar la longitud del nombre del producto para que la salida sea uniforme
+	        if (producto.length() < 25) {
+	            fila += " ".repeat(25 - producto.length());
+	        }
+	        fila += " | " + proveedor;
+	        System.out.println(fila);
+	    }
+	    
+	    System.out.println("\nPresiona Enter para continuar...");
+	    Scanner sc = new Scanner(System.in);
+	    sc.nextLine();
+	    
+	    rs.close();
+	    stmt.close();
+	}
+
+	// Método para mostrar ventas con detalles de producto y cliente
+	public static void mostrarVentas(Connection conexion) throws SQLException {
+	    Statement stmt = conexion.createStatement();
+
+	    // Query JOIN para obtener detalles de ventas
+	    String query = "SELECT v.id_venta, v.fecha, p.nombre AS producto, cl.nombre AS cliente " +
+	                   "FROM Vender v " +
+	                   "JOIN Producto p ON v.id_producto = p.id_producto " +
+	                   "JOIN Clientes cl ON v.id_cliente = cl.id_cliente";
+
+	    ResultSet rs = stmt.executeQuery(query);
+
+	    System.out.println("Detalles de Ventas:");
+	    System.out.println("ID Venta | Fecha       | Producto                 | Cliente");
+	    System.out.println("---------------------------------------------------------------------------------------");
+
+	    while (rs.next()) {
+	        int idVenta = rs.getInt("id_venta");
+	        String fecha = rs.getString("fecha");
+	        String producto = rs.getString("producto");
+	        String cliente = rs.getString("cliente");
+
+	        String fila = idVenta + "        | " + fecha + " | " + producto;
+	        if (producto.length() < 25) {
+	            fila += " ".repeat(25 - producto.length());
+	        }
+	        fila += " | " + cliente;
+	        System.out.println(fila);
+	    }
+	    
+	    rs.close();
+	    stmt.close();
+	}
+
+	public static void Comprar(Connection conexion) throws SQLException {
+		Statement stmt = conexion.createStatement();
+		Scanner sc = new Scanner(System.in);
+		System.out.println("Introduce el nombre del producto comprado:");
+		String productoComprado = sc.nextLine();
+		
+		String buscarProductoCompra = "SELECT id_producto FROM Producto WHERE nombre = '" + productoComprado + "'";
+		ResultSet rsProductoCompra = stmt.executeQuery(buscarProductoCompra);
+		int idProductoCompra = rsProductoCompra.next() ? rsProductoCompra.getInt("id_producto") : -1;
+		
+		if (idProductoCompra == 1) {
+			System.out.println("Producto no encontrado, introduce los datos: ");
+			AñadirTabla(conexion, 1);
 		}
 
-		rs.close();
-		stmt.close();
+		System.out.println("Introduce el nombre del proveedor:");
+		String proveedorCompra = sc.nextLine();
+		
+		String buscarProveedor = "SELECT id_proveedor FROM Proveedores WHERE nombre = '" + proveedorCompra + "'";
+		ResultSet rsProveedor = stmt.executeQuery(buscarProveedor);
+		int idProveedor = rsProveedor.next() ? rsProveedor.getInt("id_proveedor") : -1;
+		
+		if (idProveedor == -1) {
+			System.out.println("Provedor no encontrado, introduce los datos: ");
+			AñadirTabla(conexion, 2);
+		}
+		System.out.println("Introduce la fecha de la compra (YYYY-MM-DD):");
+		String fechaCompra = sc.nextLine();
+
+
+		  if (idProductoCompra != -1 && idProveedor != -1) {
+			String sqlComprar = "INSERT INTO Comprar (fecha, id_producto, id_proveedor) VALUES ('" + fechaCompra + "', "
+					+ idProductoCompra + ", " + idProveedor + ")";
+			String sqlStock = "UPDATE Producto SET stock = stock - 1 " + "WHERE nombre = '" + productoComprado
+					+ "' AND stock > 0";
+
+			stmt.executeUpdate(sqlStock);
+			stmt.executeUpdate(sqlComprar);
+
+			System.out.println("Compra registrada correctamente.");
+		}
 	}
 
 	public static void Vender(Connection conexion) throws SQLException {
@@ -265,16 +352,24 @@ public class Main {
 		System.out.println("Introduce el nombre del cliente:");
 		String clienteVenta = sc.nextLine();
 
-		System.out.println("Introduce la fecha de la venta (YYYY-MM-DD):");
-		String fechaVenta = sc.nextLine();
-
-		String buscarProducto = "SELECT id_producto FROM Producto WHERE nombre = '" + productoVendido + "'";
-		ResultSet rsProducto = stmt.executeQuery(buscarProducto);
-		int idProducto = rsProducto.next() ? rsProducto.getInt("id_producto") : -1;
-
 		String buscarCliente = "SELECT id_cliente FROM Clientes WHERE nombre = '" + clienteVenta + "'";
 		ResultSet rsCliente = stmt.executeQuery(buscarCliente);
 		int idCliente = rsCliente.next() ? rsCliente.getInt("id_cliente") : -1;
+		
+		String buscarProducto = "SELECT id_producto FROM Producto WHERE nombre = '" + productoVendido + "'";
+		ResultSet rsProducto = stmt.executeQuery(buscarProducto);
+		int idProducto = rsProducto.next() ? rsProducto.getInt("id_producto") : -1;
+		
+		if (idProducto != -1 && idCliente == -1) {
+
+			System.out.println("Cliente no encontrado, ingrese datos de nuevo cliente:");
+			AñadirTabla(conexion, 3);
+		}
+		
+		System.out.println("Introduce la fecha de la venta (YYYY-MM-DD):");
+		String fechaVenta = sc.nextLine();
+
+
 
 		if (idProducto != -1 && idCliente != -1) {
 			String sqlVender = "INSERT INTO Vender (fecha, id_producto, id_cliente) VALUES ('" + fechaVenta + "', "
@@ -285,9 +380,8 @@ public class Main {
 			stmt.executeUpdate(sqlStock);
 			System.out.println("Venta registrada correctamente.");
 		} else {
-			System.out.println("Error: Producto o Cliente no encontrado.");
+			System.out.println("Error: Producto no encontrado.");
 		}
 
 	}
-
 }
