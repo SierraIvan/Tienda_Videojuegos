@@ -39,7 +39,7 @@ public class Main {
 					break;
 				case 3:
 					System.out.println(
-							"1- Productos\n2- Provedores\n3- Clientes\n4- Compras\n5- Ventas\n¿Qué tabla quieres mostrar?\n ");
+							"1- Productos\n2- Provedores\n3- Clientes\n4- Compras\n¿Qué tabla quieres mostrar? ");
 					opcion = sc.nextInt();
 					mostrarTabla(conexion, opcion);
 					break;

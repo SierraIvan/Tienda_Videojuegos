@@ -39,7 +39,7 @@ public class Main {
 					break;
 				case 3:
 					System.out.println(
-							"1- Productos\n2- Provedores\n3- Clientes\n4- Compras\n5- Ventas\n¿Qué tabla quieres mostrar?\n ");
+							"1- Productos\n2- Provedores\n3- Clientes\n4- Compras\n¿Qué tabla quieres mostrar? ");
 					opcion = sc.nextInt();
 					mostrarTabla(conexion, opcion);
 					break;
@@ -234,7 +234,7 @@ public class Main {
 			query = "SELECT * FROM Comprar";
 			break;
 		case 5:
-			query = "SELECT * FROM Vender";
+			query = "SELECT * FROM Ventas";
 		default:
 			System.out.println("Opción no válida.");
 			stmt.close();

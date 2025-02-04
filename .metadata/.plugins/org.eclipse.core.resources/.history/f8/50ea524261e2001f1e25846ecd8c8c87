@@ -3,8 +3,8 @@ package main;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.sql.Statement;
+import java.sql.SQLException;
 import java.util.Scanner;
 
 public class Main {
@@ -21,7 +21,7 @@ public class Main {
 
 			int opcion = 1;
 			while (opcion != 0) {
-				System.out.println("0- Salir\n1- Añadir Datos\n2- Vender\n3- Mostrar Tabla");
+				System.out.println("0- Salir\n1- Añadir Datos\n2- Vender");
 				opcion = sc.nextInt();
 
 				switch (opcion) {
@@ -29,20 +29,14 @@ public class Main {
 					System.out.println("Saliendo...");
 					break;
 				case 1:
-					System.out.println(
-							"1- Productos\n2- Porveedores\n3- Clientes\n4- Compras\nEn que tabla quieres añadir: ");
+					System.out.println("1- Productos\n2- Porveedores\n3- Clientes\n5- Compras\nEn que tabla quieres añadir: ");
 					opcion = sc.nextInt();
 					AñadirTabla(conexion, opcion);
 					break;
 				case 2:
 					Vender(conexion);
 					break;
-				case 3:
-					System.out.println(
-							"1- Productos\n2- Provedores\n3- Clientes\n4- Compras\n5- Ventas\n¿Qué tabla quieres mostrar?\n ");
-					opcion = sc.nextInt();
-					mostrarTabla(conexion, opcion);
-					break;
+
 				default:
 					System.out.println("no se");
 				}
@@ -179,7 +173,7 @@ public class Main {
 			System.out.println("Cliente añadido correctamente.");
 			break;
 
-		case 4: // Insertar en Comprar
+		case 5: // Insertar en Comprar
 			System.out.println("Introduce el nombre del producto comprado:");
 			String productoComprado = sc.nextLine();
 
@@ -216,45 +210,6 @@ public class Main {
 		stmt.close();
 	}
 
-	public static void mostrarTabla(Connection conexion, int opcion) throws SQLException {
-		Statement stmt = conexion.createStatement();
-		String query = "";
-
-		switch (opcion) {
-		case 1:
-			query = "SELECT * FROM Producto";
-			break;
-		case 2:
-			query = "SELECT * FROM Proveedores";
-			break;
-		case 3:
-			query = "SELECT * FROM Clientes";
-			break;
-		case 4:
-			query = "SELECT * FROM Comprar";
-			break;
-		case 5:
-			query = "SELECT * FROM Vender";
-		default:
-			System.out.println("Opción no válida.");
-			stmt.close();
-			return;
-		}
-
-		ResultSet rs = stmt.executeQuery(query);
-		int columnCount = rs.getMetaData().getColumnCount();
-
-		while (rs.next()) {
-			for (int i = 1; i <= columnCount; i++) {
-				System.out.print(rs.getString(i) + " | ");
-			}
-			System.out.println();
-		}
-
-		rs.close();
-		stmt.close();
-	}
-
 	public static void Vender(Connection conexion) throws SQLException {
 		Statement stmt = conexion.createStatement();
 		Scanner sc = new Scanner(System.in);
@@ -287,7 +242,7 @@ public class Main {
 		} else {
 			System.out.println("Error: Producto o Cliente no encontrado.");
 		}
-
+		
 	}
-
+	
 }
