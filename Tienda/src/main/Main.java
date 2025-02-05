@@ -199,16 +199,13 @@ public class Main {
 
 		switch (opcion) {
 		case 1:
-			query = "SELECT * FROM Producto";
-			stmt.executeQuery(query);
+			mostrarProductos(conexion);
 			break;
 		case 2:
-			query = "SELECT * FROM Proveedores";
-			stmt.executeQuery(query);
+			mostrarProveedores(conexion);
 			break;
 		case 3:
-			query = "SELECT * FROM Clientes";
-			stmt.executeQuery(query);
+			mostrarClientes(conexion);
 			break;
 		case 4:
 			mostrarCompras(conexion);
@@ -220,9 +217,89 @@ public class Main {
 			stmt.close();
 			return;
 		}
-
+		
 		stmt.close();
 	}
+	
+	private static void mostrarProductos(Connection conexion) throws SQLException {
+	    Statement stmt = conexion.createStatement();
+	    String query = "SELECT * FROM Producto";
+	    ResultSet rs = stmt.executeQuery(query);
+	    
+	    System.out.println("\n=== LISTADO DE PRODUCTOS ===");
+	    System.out.println("ID | Nombre | Precio | Stock");
+	    System.out.println("------------------------------------");
+	    
+	    while (rs.next()) {
+	        System.out.printf("%d | %s | %.2f | %d%n",
+	            rs.getInt("id_producto"),
+	            rs.getString("nombre"),
+	            rs.getDouble("precio"),
+	            rs.getInt("stock")
+	        );
+	    }
+	    
+	    System.out.println("------------------------------------");
+	    
+	    rs.close();
+	    stmt.close();
+	}
+	
+	private static void mostrarProveedores(Connection conexion) throws SQLException {
+	    Statement stmt = conexion.createStatement();
+	    String query = "SELECT * FROM Proveedores";
+	    ResultSet rs = stmt.executeQuery(query);
+	    
+	    System.out.println("\n=== LISTADO DE PROVEEDORES ===");
+	    System.out.println("ID | Nombre | Contacto | Dirección");
+	    System.out.println("------------------------------------------------");
+	    
+	    while (rs.next()) {
+	        System.out.printf("%d | %s | %s | %s%n",
+	            rs.getInt("id_proveedor"),
+	            rs.getString("nombre"),
+	            rs.getString("contacto"),
+	            rs.getString("direccion")
+	        );
+	    }
+	    
+	    System.out.println("------------------------------------------------");
+	    
+	    System.out.println("\nPresiona Enter para continuar...");
+	    Scanner sc = new Scanner(System.in);
+	    sc.nextLine();
+	    rs.close();
+	    stmt.close();
+	}
+	
+	private static void mostrarClientes(Connection conexion) throws SQLException {
+	    Statement stmt = conexion.createStatement();
+	    String query = "SELECT * FROM Clientes";
+	    ResultSet rs = stmt.executeQuery(query);
+	    
+	    System.out.println("\n=== LISTADO DE CLIENTES ===");
+	    System.out.println("ID | Nombre | Email | Teléfono ");
+	    System.out.println("------------------------------------------------------");
+	    
+	    while (rs.next()) {
+	        System.out.printf("%d | %s | %s | %s%n",
+	            rs.getInt("id_cliente"),
+	            rs.getString("nombre"),
+	            rs.getString("email"),
+	            rs.getString("telefono")
+	        );
+	    }
+	    
+	    System.out.println("------------------------------------------------------");
+	    
+	    
+	    System.out.println("\nPresiona Enter para continuar...");
+	    Scanner sc = new Scanner(System.in);
+	    sc.nextLine();
+	    rs.close();
+	    stmt.close();
+	}
+
 	
 	public static void mostrarCompras(Connection conexion) throws SQLException {
 	    Statement stmt = conexion.createStatement();
