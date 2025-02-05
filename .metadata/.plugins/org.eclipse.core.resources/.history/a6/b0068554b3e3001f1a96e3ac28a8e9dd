@@ -195,13 +195,16 @@ public class Main {
 
 	public static void mostrarTabla(Connection conexion, int opcion) throws SQLException {
 		Statement stmt = conexion.createStatement();
+		String query = "";
 
 		switch (opcion) {
 		case 1:
-			mostrarProductos(conexion);
+			query = "SELECT * FROM Producto";
+			stmt.executeQuery(query);
 			break;
 		case 2:
-			mostrarProveedores(conexion);
+			query = "SELECT * FROM Proveedores";
+			stmt.executeQuery(query);
 			break;
 		case 3:
 			mostrarClientes(conexion);
@@ -218,61 +221,6 @@ public class Main {
 		}
 		
 		stmt.close();
-	}
-	
-	private static void mostrarProductos(Connection conexion) throws SQLException {
-	    Statement stmt = conexion.createStatement();
-	    String query = "SELECT * FROM Producto";
-	    ResultSet rs = stmt.executeQuery(query);
-	    
-	    System.out.println("\n=== LISTADO DE PRODUCTOS ===");
-	    System.out.println("ID | Nombre | Precio | Stock");
-	    System.out.println("------------------------------------");
-	    
-	    while (rs.next()) {
-	        System.out.printf("%d | %s | %.2f | %d%n",
-	            rs.getInt("id_producto"),
-	            rs.getString("nombre"),
-	            rs.getDouble("precio"),
-	            rs.getInt("stock")
-	        );
-	    }
-	    
-	    System.out.println("------------------------------------");
-	    
-	    
-	    System.out.println("\nPresiona Enter para continuar...");
-	    Scanner sc = new Scanner(System.in);
-	    sc.nextLine();
-	    rs.close();
-	    stmt.close();
-	}
-	
-	private static void mostrarProveedores(Connection conexion) throws SQLException {
-	    Statement stmt = conexion.createStatement();
-	    String query = "SELECT * FROM Proveedores";
-	    ResultSet rs = stmt.executeQuery(query);
-	    
-	    System.out.println("\n=== LISTADO DE PROVEEDORES ===");
-	    System.out.println("ID | Nombre | Contacto | Dirección");
-	    System.out.println("------------------------------------------------");
-	    
-	    while (rs.next()) {
-	        System.out.printf("%d | %s | %s | %s%n",
-	            rs.getInt("id_proveedor"),
-	            rs.getString("nombre"),
-	            rs.getString("contacto"),
-	            rs.getString("direccion")
-	        );
-	    }
-	    
-	    System.out.println("------------------------------------------------");
-	    
-	    System.out.println("\nPresiona Enter para continuar...");
-	    Scanner sc = new Scanner(System.in);
-	    sc.nextLine();
-	    rs.close();
-	    stmt.close();
 	}
 	
 	private static void mostrarClientes(Connection conexion) throws SQLException {

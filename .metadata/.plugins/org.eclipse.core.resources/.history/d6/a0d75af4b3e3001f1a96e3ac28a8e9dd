@@ -195,6 +195,7 @@ public class Main {
 
 	public static void mostrarTabla(Connection conexion, int opcion) throws SQLException {
 		Statement stmt = conexion.createStatement();
+		String query = "";
 
 		switch (opcion) {
 		case 1:
@@ -240,10 +241,6 @@ public class Main {
 	    
 	    System.out.println("------------------------------------");
 	    
-	    
-	    System.out.println("\nPresiona Enter para continuar...");
-	    Scanner sc = new Scanner(System.in);
-	    sc.nextLine();
 	    rs.close();
 	    stmt.close();
 	}
