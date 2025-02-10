@@ -1,0 +1,90 @@
+package main;
+
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.Statement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+
+public class Main {
+    private static final String URL = "jdbc:mysql://localhost:3306/TiendaVideojuegos?serverTimezone=UTC";
+    private static final String USER = "root";
+    private static final String PASS = "root";
+    
+    public static void main(String[] args) {
+        try {
+            Connection conexion = DriverManager.getConnection(URL, USER, PASS);
+            System.out.println("Conexión establecida con éxito");
+            
+            crearTablaEInsertarDatos(conexion);
+            
+            //consultarDepartamentos(conexion);
+            
+            //eliminarTodosDepartamentos(conexion);
+            
+            conexion.close();
+            System.out.println("Conexión cerrada");
+            
+        } catch (SQLException e) {
+            System.out.println("Error: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+    
+    public static void crearTablaEInsertarDatos(Connection conexion) throws SQLException {
+        Statement stmt = conexion.createStatement();
+
+        // Crear tabla Proveedor
+        String createTableProveedor = "CREATE TABLE IF NOT EXISTS Proveedor (" +
+            "id_proveedor INT AUTO_INCREMENT PRIMARY KEY," +
+            "nombre VARCHAR(50) NOT NULL," +
+            "ubicacion VARCHAR(100)," +
+            "presupuesto DECIMAL(10,2)," +
+            "jefe_proveedor VARCHAR(50)," +
+            "fecha_creacion DATE" +
+            ")";
+
+        // Crear tabla Producto
+        String createTableProducto = "CREATE TABLE IF NOT EXISTS Producto (" +
+            "id_producto INT AUTO_INCREMENT PRIMARY KEY," +
+            "nombre VARCHAR(50) NOT NULL," +
+            "precio DECIMAL(10,2)," +
+            "cantidad INT," +
+            "id_proveedor INT," +
+            "FOREIGN KEY (id_proveedor) REFERENCES Proveedor(id_proveedor)" +
+            ")";
+        String createTableClientes = "CREATE TABLE IF NOT EXISTS Clientes (" +
+                "id_proveedor INT AUTO_INCREMENT PRIMARY KEY," +
+                "nombre VARCHAR(50) NOT NULL," +
+                "ubicacion VARCHAR(100)," +
+                "presupuesto DECIMAL(10,2)," +
+                "jefe_proveedor VARCHAR(50)," +
+                "fecha_creacion DATE" +
+                ")";
+
+            // Crear tabla Producto
+        String createTablePersonal = "CREATE TABLE IF NOT EXISTS Personal (" +
+            "id_producto INT AUTO_INCREMENT PRIMARY KEY," +
+            "nombre VARCHAR(50) NOT NULL," +
+            "precio DECIMAL(10,2)," +
+            "cantidad INT," +
+            "id_proveedor INT," +
+            "FOREIGN KEY (id_proveedor) REFERENCES Proveedor(id_proveedor)" +
+            ")";
+
+        try {
+            stmt.executeUpdate(createTableProveedor);
+            System.out.println("Tabla Proveedor creada correctamente.");
+
+            stmt.executeUpdate(createTableProducto);
+            System.out.println("Tabla Producto creada correctamente.");
+        } catch (SQLException e) {
+            System.out.println("Error al crear tablas: " + e.getMessage());
+        }
+
+
+        stmt.close();
+    }
+
+    
+}

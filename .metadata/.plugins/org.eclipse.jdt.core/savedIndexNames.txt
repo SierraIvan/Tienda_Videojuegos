@@ -1,0 +1,5 @@
+INDEX VERSION 1.134+C:\Users\Ivan\Desktop\DAM\Tienda_Videojuegos\Tienda_Videojuegos\.metadata\.plugins\org.eclipse.jdt.core
+1865797976.index
+722885042.index
+1442013473.index
+263265558.index

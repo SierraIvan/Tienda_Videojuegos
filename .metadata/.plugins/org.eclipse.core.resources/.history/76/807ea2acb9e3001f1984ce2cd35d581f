@@ -1,0 +1,49 @@
+package main;
+
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.Scanner;
+
+public class Cliente {
+    public static void crearTabla(Connection conexion) throws SQLException {
+        Statement stmt = conexion.createStatement();
+        String sql = "CREATE TABLE IF NOT EXISTS Cliente ("
+                + "id_cliente INT AUTO_INCREMENT PRIMARY KEY, "
+                + "nombre VARCHAR(100), "
+                + "email VARCHAR(100))";
+        stmt.executeUpdate(sql);
+        stmt.close();
+    }
+
+    public static void mostrarClientes(Connection conexion) throws SQLException {
+        Statement stmt = conexion.createStatement();
+        ResultSet rs = stmt.executeQuery("SELECT * FROM Cliente");
+
+        System.out.println("hola");
+        System.out.println("\n=== LISTADO DE CLIENTES ===");
+        while (rs.next()) {
+            System.out.printf("%d | %s | %s%n",
+                    rs.getInt("id_cliente"),
+                    rs.getString("nombre"),
+                    rs.getString("email"));
+        }
+        rs.close();
+        stmt.close();
+    }
+
+    public static void insertarCliente(Connection conexion) throws SQLException {
+        Scanner sc = new Scanner(System.in);
+        System.out.print("Nombre del cliente: ");
+        String nombre = sc.nextLine();
+        System.out.print("Email: ");
+        String email = sc.nextLine();
+
+        Statement stmt = conexion.createStatement();
+        String sql = "INSERT INTO Cliente (nombre, email) VALUES ('" + nombre + "', '" + email + "')";
+        stmt.executeUpdate(sql);
+        stmt.close();
+        System.out.println("Cliente agregado con éxito.");
+    }
+}

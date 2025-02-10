@@ -1,0 +1,34 @@
+package main;
+
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.Scanner;
+
+public class Compra {
+    public static void crearTabla(Connection conexion) throws SQLException {
+        Statement stmt = conexion.createStatement();
+        String sql = "CREATE TABLE IF NOT EXISTS Compra ("
+                + "id_compra INT AUTO_INCREMENT PRIMARY KEY, "
+                + "id_producto INT, "
+                + "cantidad INT, "
+                + "FOREIGN KEY (id_producto) REFERENCES Producto(id_producto))";
+        stmt.executeUpdate(sql);
+        stmt.close();
+    }
+
+    public static void realizarCompra(Connection conexion) throws SQLException {
+        Scanner sc = new Scanner(System.in);
+        System.out.print("ID del producto: ");
+        int idProducto = sc.nextInt();
+        System.out.print("Cantidad: ");
+        int cantidad = sc.nextInt();
+
+        Statement stmt = conexion.createStatement();
+        String sql = "INSERT INTO Compra (id_producto, cantidad) VALUES (" + idProducto + ", " + cantidad + ")";
+        stmt.executeUpdate(sql);
+        stmt.close();
+        System.out.println("Compra registrada con éxito.");
+    }
+}
+

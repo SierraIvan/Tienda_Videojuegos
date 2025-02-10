@@ -11,12 +11,14 @@ public class Compra {
         Statement stmt = conexion.createStatement();
         String sql = "CREATE TABLE IF NOT EXISTS Comprar ("
                 + "id_compra INT AUTO_INCREMENT PRIMARY KEY, "
-                + "id_producto INT, "
-                + "id_proveedor INT, "
-                + "cantidad INT, "
-                + "FOREIGN KEY (id_producto) REFERENCES Producto(id_producto), "
-                + "FOREIGN KEY (id_proveedor) REFERENCES Proveedores(id_proveedor)"
+                + "fecha DATE NOT NULL, "
+                + "id_producto INT NOT NULL, "
+                + "id_proveedor INT NOT NULL, "
+                + "cantidad INT NOT NULL, "
+                + "FOREIGN KEY (id_producto) REFERENCES Producto(id_producto) ON DELETE CASCADE ON UPDATE CASCADE, "
+                + "FOREIGN KEY (id_proveedor) REFERENCES Proveedores(id_proveedor) ON DELETE CASCADE ON UPDATE CASCADE"
                 + ")";
+
         stmt.executeUpdate(sql);
         stmt.close();
     }
@@ -55,11 +57,15 @@ public class Compra {
 
          System.out.println("Introduce la fecha de la compra (YYYY-MM-DD):");
          String fechaCompra = sc.nextLine();
+         
+         
+         System.out.println("Introduce la cantidad ");
+         int cantidad = sc.nextInt();
 
          if (idProductoCompra != -1 && idProveedor != -1) {
-             String sqlComprar = "INSERT INTO Comprar (fecha, id_producto, id_proveedor) VALUES ('" + fechaCompra + "', "
-                     + idProductoCompra + ", " + idProveedor + ")";
-             String sqlStock = "UPDATE Producto SET stock = stock + 1 WHERE nombre = '" + productoComprado + "'";
+             String sqlComprar = "INSERT INTO Comprar (fecha, id_producto, id_proveedor, cantidad) VALUES ('" + fechaCompra + "', "
+                     + idProductoCompra + ", " + idProveedor + ", " + cantidad + ")";
+             String sqlStock = "UPDATE Producto SET stock = stock + " + cantidad + " WHERE nombre = '" + productoComprado + "'";
 
              stmt.executeUpdate(sqlStock);
              stmt.executeUpdate(sqlComprar);
@@ -75,7 +81,7 @@ public class Compra {
 	    Statement stmt = conexion.createStatement();
 
 	    // Query JOIN para obtener detalles de compras
-	    String query = "SELECT c.id_compra, c.fecha, p.nombre AS producto, pr.nombre AS proveedor " +
+	    String query = "SELECT c.id_compra, c.fecha, p.nombre AS producto, pr.nombre AS proveedor, c.cantidad " +
 	                   "FROM Comprar c " +
 	                   "JOIN Producto p ON c.id_producto = p.id_producto " +
 	                   "JOIN Proveedores pr ON c.id_proveedor = pr.id_proveedor";
@@ -85,7 +91,7 @@ public class Compra {
 			System.out.println("");
 		}
 	    System.out.println("Detalles de Compras:");
-	    System.out.println("ID Compra | Fecha       | Producto                 | Proveedor");
+	    System.out.println("ID Compra | Fecha       | Producto                 | Proveedor       |Cantidad");
 	    System.out.println("-----------------------------------------------------------------------------------------");
 
 	    while (rs.next()) {
@@ -93,13 +99,14 @@ public class Compra {
 	        String fecha = rs.getString("fecha");
 	        String producto = rs.getString("producto");
 	        String proveedor = rs.getString("proveedor");
+	        int cantidad = rs.getInt("cantidad");
 
 	       
-	        String fila = idCompra + "         | " + fecha + " | " + producto;
+	        String fila = idCompra + "         | " + fecha + " | " + producto ;
 	        if (producto.length() < 25) {
 	            fila += " ".repeat(25 - producto.length());
 	        }
-	        fila += " | " + proveedor;
+	        fila += " | " + proveedor + " | " + cantidad;
 	        System.out.println(fila);
 	    }
 	    
