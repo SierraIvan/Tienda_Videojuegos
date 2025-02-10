@@ -65,13 +65,11 @@ public class Cliente {
           
         }else {
         
-        System.out.println("Telefono: ");
-        int telefono = sc.nextInt();
-        	
         System.out.print("Email: ");
         String email = sc.nextLine();
 
-        String sql = "INSERT INTO Clientes (nombre,telefono, email) VALUES ('" + nombre + "', '" + telefono +"', '"  + email + "')";
+
+        String sql = "INSERT INTO Cliente (nombre, email) VALUES ('" + nombre + "', '" + email + "')";
         stmt.executeUpdate(sql);
         stmt.close();
         System.out.println("Cliente agregado con éxito.");

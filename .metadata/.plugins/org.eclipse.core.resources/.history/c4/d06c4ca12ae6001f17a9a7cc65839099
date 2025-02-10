@@ -91,7 +91,7 @@ public class Compra {
 			System.out.println("");
 		}
 	    System.out.println("Detalles de Compras:");
-	    System.out.println("ID Compra | Fecha       | Producto                 | Proveedor       |Cantidad");
+	    System.out.println("ID Compra | Fecha       | Producto                 | Proveedor                     |Cantidad");
 	    System.out.println("-----------------------------------------------------------------------------------------");
 
 	    while (rs.next()) {

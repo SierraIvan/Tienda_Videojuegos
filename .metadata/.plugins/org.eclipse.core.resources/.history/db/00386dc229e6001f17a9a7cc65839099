@@ -57,15 +57,11 @@ public class Compra {
 
          System.out.println("Introduce la fecha de la compra (YYYY-MM-DD):");
          String fechaCompra = sc.nextLine();
-         
-         
-         System.out.println("Introduce la cantidad ");
-         int cantidad = sc.nextInt();
 
          if (idProductoCompra != -1 && idProveedor != -1) {
-             String sqlComprar = "INSERT INTO Comprar (fecha, id_producto, id_proveedor, cantidad) VALUES ('" + fechaCompra + "', "
-                     + idProductoCompra + ", " + idProveedor + ", " + cantidad + ")";
-             String sqlStock = "UPDATE Producto SET stock = stock + " + cantidad + " WHERE nombre = '" + productoComprado + "'";
+             String sqlComprar = "INSERT INTO Comprar (fecha, id_producto, id_proveedor) VALUES ('" + fechaCompra + "', "
+                     + idProductoCompra + ", " + idProveedor + ")";
+             String sqlStock = "UPDATE Producto SET stock = stock + 1 WHERE nombre = '" + productoComprado + "'";
 
              stmt.executeUpdate(sqlStock);
              stmt.executeUpdate(sqlComprar);
@@ -91,7 +87,7 @@ public class Compra {
 			System.out.println("");
 		}
 	    System.out.println("Detalles de Compras:");
-	    System.out.println("ID Compra | Fecha       | Producto                 | Proveedor       |Cantidad");
+	    System.out.println("ID Compra | Fecha       | Producto                 | Proveedor");
 	    System.out.println("-----------------------------------------------------------------------------------------");
 
 	    while (rs.next()) {
@@ -99,14 +95,13 @@ public class Compra {
 	        String fecha = rs.getString("fecha");
 	        String producto = rs.getString("producto");
 	        String proveedor = rs.getString("proveedor");
-	        int cantidad = rs.getInt("cantidad");
 
 	       
-	        String fila = idCompra + "         | " + fecha + " | " + producto ;
+	        String fila = idCompra + "         | " + fecha + " | " + producto;
 	        if (producto.length() < 25) {
 	            fila += " ".repeat(25 - producto.length());
 	        }
-	        fila += " | " + proveedor + " | " + cantidad;
+	        fila += " | " + proveedor;
 	        System.out.println(fila);
 	    }
 	    

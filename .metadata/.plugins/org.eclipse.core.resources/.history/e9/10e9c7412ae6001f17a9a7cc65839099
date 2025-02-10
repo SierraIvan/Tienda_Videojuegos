@@ -83,5 +83,49 @@ public class Main {
         }
         
     }
+    public static void agregar() throws SQLException {
+    	Scanner sc = new Scanner(System.in);
+    	Connection conexion = Conexion.getConnection();
+    	int opcion;
+    	  do {
+              System.out.println("\n===== MENÚ AGREGAR =====");
+              System.out.println("1. Agregar Producto");
+              System.out.println("2. Agregar Cliente");
+              System.out.println("3. Agregar Proveedor");
+              System.out.println("4. Salir");
+              System.out.print("Seleccione una opción: ");
+              opcion = sc.nextInt();
+
+              switch (opcion) {
+                  case 1:
+                      Producto.insertarProducto(conexion);
+                      break;
+                  case 3:
+                      Cliente.insertarCliente(conexion);
+                      break;
+                  case 5:
+                      Proveedor.insertarProveedor(conexion);
+                      break;
+                  case 7:
+                      Compra.realizarCompra(conexion);
+                      break;
+                  case 8:
+                      Venta.realizarVenta(conexion);
+                      break;
+                  case 9:
+                      Compra.crearTabla(conexion);
+                      break;
+                  case 10:
+                      Venta.mostrarVentas(conexion);
+                      break;
+                  case 11:
+                      System.out.println("Saliendo del programa...");
+                      break;
+                  default:
+                      System.out.println("Opción inválida. Intente de nuevo.");
+                      break;
+              }
+          } while (opcion != 11);
+    }
 
 }

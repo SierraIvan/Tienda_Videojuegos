@@ -91,7 +91,7 @@ public class Compra {
 			System.out.println("");
 		}
 	    System.out.println("Detalles de Compras:");
-	    System.out.println("ID Compra | Fecha       | Producto                 | Proveedor       |Cantidad");
+	    System.out.println("ID Compra | Fecha       | Producto                 | Proveedor                     |Cantidad");
 	    System.out.println("-----------------------------------------------------------------------------------------");
 
 	    while (rs.next()) {
@@ -99,7 +99,7 @@ public class Compra {
 	        String fecha = rs.getString("fecha");
 	        String producto = rs.getString("producto");
 	        String proveedor = rs.getString("proveedor");
-	        int cantidad = rs.getInt("cantidad");
+	        String cantidad = rs.getNString("cantidad");
 
 	       
 	        String fila = idCompra + "         | " + fecha + " | " + producto ;

@@ -71,6 +71,7 @@ public class Cliente {
         System.out.print("Email: ");
         String email = sc.nextLine();
 
+
         String sql = "INSERT INTO Clientes (nombre,telefono, email) VALUES ('" + nombre + "', '" + telefono +"', '"  + email + "')";
         stmt.executeUpdate(sql);
         stmt.close();
