@@ -48,7 +48,7 @@ public class Cliente {
 	    stmt.close();
 	}
 
-    //metodo para insertar datos en la tabla clientes
+
     public static void insertarCliente(Connection conexion) throws SQLException {
     	Statement stmt = conexion.createStatement();
         Scanner sc = new Scanner(System.in);

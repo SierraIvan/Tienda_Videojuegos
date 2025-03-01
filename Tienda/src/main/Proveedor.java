@@ -7,6 +7,8 @@ import java.sql.Statement;
 import java.util.Scanner;
 
 public class Proveedor {
+	
+	//Metodo para crear la tabla proveedores
     public static void crearTabla(Connection conexion) throws SQLException {
         Statement stmt = conexion.createStatement();
         String sql = "CREATE TABLE IF NOT EXISTS Proveedores ("
@@ -17,6 +19,7 @@ public class Proveedor {
         stmt.close();
     }
 
+    //metodo para insertar datos en proveedores
     public static void insertarProveedor(Connection conexion) throws SQLException {
         Statement stmt = conexion.createStatement();
         Scanner sc = new Scanner(System.in);
@@ -46,6 +49,8 @@ public class Proveedor {
         }
     }
     
+    
+    //metodo para mostrar la tabla proveedores
     public static void mostrarProveedores(Connection conexion) throws SQLException {
 	    Statement stmt = conexion.createStatement();
 	    String query = "SELECT * FROM Proveedores";

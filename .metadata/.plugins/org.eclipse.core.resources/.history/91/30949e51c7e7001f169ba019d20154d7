@@ -49,8 +49,6 @@ public class Producto {
 	    stmt.close();
 	}
 
-    
-    //metodo para insertar datos en la tabla productos
     public static void insertarProducto(Connection conexion) throws SQLException {
         Statement stmt = conexion.createStatement();
         Scanner sc = new Scanner(System.in);

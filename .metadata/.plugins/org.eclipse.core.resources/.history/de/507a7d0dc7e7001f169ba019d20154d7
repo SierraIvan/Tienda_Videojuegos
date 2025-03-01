@@ -7,8 +7,6 @@ import java.sql.Statement;
 import java.util.Scanner;
 
 public class Cliente {
-	
-	//metodo para crear la tabla de clientes
     public static void crearTabla(Connection conexion) throws SQLException {
         Statement stmt = conexion.createStatement();
         String sql = "CREATE TABLE IF NOT EXISTS Clientes ("
@@ -19,7 +17,6 @@ public class Cliente {
         stmt.close();
     }
 
-    //metodo para mostrar la tabla clientes
     public static void mostrarClientes(Connection conexion) throws SQLException {
 	    Statement stmt = conexion.createStatement();
 	    String query = "SELECT * FROM Clientes";
@@ -48,7 +45,7 @@ public class Cliente {
 	    stmt.close();
 	}
 
-    //metodo para insertar datos en la tabla clientes
+
     public static void insertarCliente(Connection conexion) throws SQLException {
     	Statement stmt = conexion.createStatement();
         Scanner sc = new Scanner(System.in);

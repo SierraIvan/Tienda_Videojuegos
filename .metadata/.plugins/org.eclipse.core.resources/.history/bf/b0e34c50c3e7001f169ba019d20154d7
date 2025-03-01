@@ -8,7 +8,7 @@ import java.util.Scanner;
 public class Main {
 	
 	
-	//metodo principal, el cual iniciar el programa
+	
     public static void main(String[] args) {
         try (Connection conexion = Conexion.getConnection()) {
             Producto.crearTabla(conexion);
@@ -86,4 +86,4 @@ public class Main {
     }
 
 	}
-
+}

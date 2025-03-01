@@ -7,8 +7,6 @@ import java.sql.Statement;
 import java.util.Scanner;
 
 public class Compra {
-	
-	//metodo para crear la tabla Compra
     public static void crearTabla(Connection conexion) throws SQLException {
         Statement stmt = conexion.createStatement();
         String sql = "CREATE TABLE IF NOT EXISTS Comprar ("
@@ -25,8 +23,6 @@ public class Compra {
         stmt.close();
     }
 
-    
-    //metodo para realizar una compra
     public static void realizarCompra(Connection conexion) throws SQLException {
     	 Statement stmt = conexion.createStatement();
          Scanner sc = new Scanner(System.in);
@@ -81,7 +77,6 @@ public class Compra {
      }
     
     
-    //metodo para mostrar la tabla compras
     public static void mostrarCompras(Connection conexion) throws SQLException {
 	    Statement stmt = conexion.createStatement();
 
